@@ -36,8 +36,11 @@ window.addEventListener(`DOMContentLoaded`, function () {
         setInterval(updateClock, 1000);
       } else {
         timerHours.textContent = `00`;
+        timerHours.style.color = `red`;
         timerMinutes.textContent = `00`;
+        timerMinutes.style.color = `red`;
         timerSeconds.textContent = `00`;
+        timerSeconds.style.color = `red`;
       }
     }
 
