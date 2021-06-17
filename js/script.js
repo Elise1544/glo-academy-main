@@ -57,11 +57,6 @@ window.addEventListener(`DOMContentLoaded`, () => {
 			menuItems = menu.querySelectorAll(`ul>li`);
 
 		const handlerMenu = () => {
-			// if (!menu.style.transform || menu.style.transform === `translate(-100%)`) {
-			// 	menu.style.transform = `translate(0)`;
-			// } else {
-			// 	menu.style.transform = `translate(-100%)`;
-			// }
 			menu.classList.toggle(`active-menu`);
 		};
 
@@ -81,44 +76,31 @@ window.addEventListener(`DOMContentLoaded`, () => {
 			popupBtn = document.querySelectorAll(`.popup-btn`),
 			popupClose = document.querySelector(`.popup-close`);
 
-		let animateElem = false;
 		const animatePopup = () => {
-			let animateInterval;
 			let count = 0;
-			let animate = () => {
-				animateInterval = requestAnimationFrame(animate);
+			let animateElem = false;
+			const animate = () => {
+				let animateInterval = requestAnimationFrame(animate);
 				count++;
-				if (count <= (document.documentElement.clientHeight / 20)) {
-					popupContent.style.top = `${count * 2}px`;
-				} else {
+				if (count >= document.documentElement.clientHeight / 20) {
 					cancelAnimationFrame(animateInterval);
+				} else if (screen.width < 768) {
+					cancelAnimationFrame(animateInterval);
+					popup.style.display = `block`;
+				} else {
+					popup.style.display = `block`;
+					popupContent.style.top = `${count * 2}px`;
 				}
-			}
-			animateInterval = requestAnimationFrame(animate);
-
-			if (screen.width > 768 && (!animateElem)) {
-				popup.style.display = `block`;
-				animateInterval = requestAnimationFrame(animate);
-				animateElem = true;
-			} else if (screen.width < 768) {
-				cancelAnimationFrame(animateInterval);
-				popup.style.display = `block`;
-				popupClose.addEventListener(`click`, () => {
-					popup.style.display = `none`;
-				});
-			} else {
-				animateElem = false;
-				cancelAnimationFrame(animateInterval);
-				popup.style.display = `none`;
-			}
-
+			};
+			animate();
 		};
 
 		popupBtn.forEach((elem) => {
 			elem.addEventListener(`click`, animatePopup);
 		});
-		popupClose.addEventListener(`click`, animatePopup);
+		popupClose.addEventListener(`click`, () => {
+			popup.style.display = `none`;
+		});
 	};
 	togglePopUp();
-
 });
