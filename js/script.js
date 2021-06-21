@@ -53,19 +53,17 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	const toggleMenu = () => {
 		const btnMenu = document.querySelector(`.menu`),
 			menu = document.querySelector(`menu`),
-			closeBtn = document.querySelector(`.close-btn`),
-			menuItems = menu.querySelectorAll(`ul>li`);
+			closeBtn = document.querySelector(`.close-btn`);
 
-		const handlerMenu = (evt) => {
-			let target = evt.target;
+		const handlerMenu = evt => {
+			const target = evt.target;
 			if (target.closest(`.menu`) === btnMenu) {
 				menu.classList.toggle(`active-menu`);
-			} else if (target === closeBtn) {
+			} else if ((target === closeBtn) || (target.closest(`a`)) || (!target.closest(`menu`))) {
 				menu.classList.remove(`active-menu`);
-			} else if (target.closest(`a`)) {
-				menu.classList.remove(`active-menu`);
+			} else {
+				return;
 			}
-
 		};
 
 		document.body.addEventListener(`click`, handlerMenu);
@@ -101,7 +99,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 			elem.addEventListener(`click`, animatePopup);
 		});
 
-		popup.addEventListener(`click`, (evt) => {
+		popup.addEventListener(`click`, evt => {
 			let target = evt.target;
 
 			if (target.classList.contains(`popup-close`)) {
