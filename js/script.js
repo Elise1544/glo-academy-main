@@ -27,14 +27,12 @@ window.addEventListener(`DOMContentLoaded`, () => {
 		}
 
 		function updateClock() {
-			const timer = getTimeRemaining();
-
-			timerHours.textContent = addZero(timer.hours);
-			timerMinutes.textContent = addZero(timer.minutes);
-			timerSeconds.textContent = addZero(timer.seconds);
+			let timer = getTimeRemaining();
 
 			if (timer.timeRemaining > 0) {
-				setInterval(updateClock, 1000);
+				timerHours.textContent = addZero(timer.hours);
+				timerMinutes.textContent = addZero(timer.minutes);
+				timerSeconds.textContent = addZero(timer.seconds);
 			} else {
 				timerHours.textContent = `00`;
 				timerHours.style.color = `red`;
@@ -45,7 +43,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 			}
 		}
 
-		updateClock();
+		setInterval(updateClock, 1000);
 	};
 	countTimer('18 jule 2021');
 
@@ -84,11 +82,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 				count++;
 				if (count >= document.documentElement.clientHeight / 20) {
 					cancelAnimationFrame(animateInterval);
-				} else if (screen.width < 768) {
-					cancelAnimationFrame(animateInterval);
-					popup.style.display = `block`;
 				} else {
-					popup.style.display = `block`;
 					popupContent.style.top = `${count * 2}px`;
 				}
 			};
@@ -96,7 +90,12 @@ window.addEventListener(`DOMContentLoaded`, () => {
 		};
 
 		popupBtn.forEach(elem => {
-			elem.addEventListener(`click`, animatePopup);
+			elem.addEventListener(`click`, () => {
+				popup.style.display = `block`;
+				if (document.documentElement.clientWidth > 768) {
+					animatePopup();
+				}
+			});
 		});
 
 		popup.addEventListener(`click`, evt => {
@@ -148,5 +147,105 @@ window.addEventListener(`DOMContentLoaded`, () => {
 
 	};
 	tabs();
+
+	// слайдер
+	const slider = () => {
+		const slide = document.querySelectorAll(`.portfolio-item`),
+			dotBlock = document.querySelector(`.portfolio-dots`),
+			slider = document.querySelector(`.portfolio-content`);
+
+		let currentSlide = 0,
+			interval,
+			dot;
+
+		const addDots = () => {
+			for (let i = 0; i < slide.length; i++) {
+				let li = document.createElement(`li`);
+				li.classList.add(`dot`);
+				dotBlock.append(li);
+			}
+			dot = document.querySelectorAll(`.dot`);
+		};
+		addDots();
+
+		const prevSlide = (elem, index, strClass) => {
+			elem[index].classList.remove(strClass);
+		};
+
+		const nextSlide = (elem, index, strClass) => {
+			elem[index].classList.add(strClass);
+		};
+
+		const autoPlaySlide = () => {
+			prevSlide(slide, currentSlide, `portfolio-item-active`);
+			prevSlide(dot, currentSlide, `dot-active`);
+			currentSlide++;
+			if (currentSlide >= slide.length) {
+				currentSlide = 0;
+			}
+			nextSlide(slide, currentSlide, `portfolio-item-active`);
+			nextSlide(dot, currentSlide, `dot-active`);
+		};
+
+		const startSlide = (time) => {
+			interval = setInterval(autoPlaySlide, time);
+		};
+
+		const stopSlide = () => {
+			clearInterval(interval);
+		};
+
+		slider.addEventListener(`click`, evt => {
+			evt.preventDefault();
+
+			let target = evt.target;
+
+			if (!target.matches(`.portfolio-btn, .dot`)) {
+				return;
+			}
+
+			prevSlide(slide, currentSlide, `portfolio-item-active`);
+			prevSlide(dot, currentSlide, `dot-active`);
+			if (target.matches(`#arrow-right`)) {
+				currentSlide++;
+			} else if (target.matches(`#arrow-left`)) {
+				currentSlide--;
+			} else if (target.matches(`.dot`)) {
+				dot.forEach((elem, index) => {
+					if (elem === target) {
+						currentSlide = index;
+					}
+				});
+			}
+
+			if (currentSlide >= slide.length) {
+				currentSlide = 0;
+			}
+
+			if (currentSlide < 0) {
+				currentSlide = slide.length - 1;
+			}
+
+			nextSlide(slide, currentSlide, `portfolio-item-active`);
+			nextSlide(dot, currentSlide, `dot-active`);
+		});
+
+		slider.addEventListener(`mouseover`, evt => {
+			if (evt.target.matches(`.portfolio-btn`) || evt.target.matches(`.dot`)) {
+				stopSlide();
+			}
+		});
+
+		slider.addEventListener(`mouseout`, evt => {
+			if (evt.target.matches(`.portfolio-btn`) || evt.target.matches(`.dot`)) {
+				startSlide(1500);
+			}
+		});
+
+		startSlide(1500);
+
+	};
+	slider();
+
 
 });
