@@ -302,7 +302,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 
 		phone.forEach(item => {
 			item.addEventListener(`input`, () => {
-				replace(item, /[^0-9()\-]/);
+				replace(item, /[^0-9()\-+]/);
 			});
 		});
 
