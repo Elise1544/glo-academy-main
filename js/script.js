@@ -148,7 +148,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	};
 	tabs();
 
-	// слайдер
+	// slider
 	const slider = () => {
 		const slide = document.querySelectorAll(`.portfolio-item`),
 			dotBlock = document.querySelector(`.portfolio-dots`),
@@ -247,7 +247,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	};
 	slider();
 
-	// смена фото
+	// change photo
 	const team = () => {
 		const commandPhotos = document.querySelectorAll(`.command__photo`);
 
@@ -265,7 +265,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	};
 	team();
 
-	// валидация введенных данных
+	// valid
 	const validation = () => {
 		const calcItems = document.querySelectorAll(`.calc-item:not(.calc-type)`),
 			name = document.querySelectorAll(`.form-name`),
@@ -286,23 +286,23 @@ window.addEventListener(`DOMContentLoaded`, () => {
 
 		name.forEach(item => {
 			item.addEventListener(`input`, () => {
-				replace(item, /[^а-я\-\s]/i);
+				replace(item, /[^а-я\s]/i);
 			});
 		});
 
 		message.addEventListener(`input`, () => {
-			replace(message, /[^а-я\-\s]/i);
+			replace(message, /[^а-я\d\W\s]/i);
 		});
 
 		email.forEach(item => {
 			item.addEventListener(`input`, (evt) => {
-				replace(item, /[^a-z\-.@_!*']/gi);
+				replace(item, /[^a-z\d\-.@_!*']/gi);
 			});
 		});
 
 		phone.forEach(item => {
 			item.addEventListener(`input`, () => {
-				replace(item, /[^0-9()\-+]/);
+				replace(item, /[^0-9\++]/);
 			});
 		});
 
@@ -325,6 +325,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	};
 	validation();
 
+	// calculator
 	const calc = (price = 100) => {
 		const calcBlock = document.querySelector(`.calc-block`),
 			calcType = document.querySelector(`.calc-type`),
@@ -384,6 +385,64 @@ window.addEventListener(`DOMContentLoaded`, () => {
 	};
 	calc(100);
 
+	// send form
+	const sendForm = (formNumber) => {
+		const errorMessage = `Что-то пошло не так...`,
+			loadMessage = `Загрузка...`,
+			successMessage = `Спасибо! Мы скоро с вами свяжемся!`;
 
+		const form = document.querySelector(formNumber);
+
+		const statusMessage = document.createElement(`div`);
+		if (form === document.querySelector(`#form3`)) {
+			statusMessage.style.cssText = `font-size: 2rem;
+			color: white`;
+		} else {
+			statusMessage.style.cssText = `font-size: 2rem`;
+		}
+
+		form.addEventListener(`submit`, (evt) => {
+			evt.preventDefault();
+			form.appendChild(statusMessage);
+
+			statusMessage.textContent = loadMessage;
+			const formData = new FormData(form);
+			let body = {};
+			formData.forEach((key, val) => {
+				body[key] = val;
+			});
+
+			postData(body,
+				() => {
+					statusMessage.textContent = successMessage;
+				},
+				(error) => {
+					statusMessage.textContent = errorMessage;
+					console.log(error.text);
+				}
+			);
+			form.reset();
+		});
+
+		const postData = (body, outputData, errorData) => {
+			const request = new XMLHttpRequest();
+			request.addEventListener(`readystatechange`, () => {
+				if (request.readyState !== 4) {
+					return;
+				}
+				if (request.status === 200) {
+					outputData();
+				} else {
+					errorData(request.status);
+				}
+			});
+			request.open('POST', './server.php');
+			request.setRequestHeader(`Content-Type`, `application/json`);
+			request.send(JSON.stringify(body));
+		};
+	};
+	sendForm(`#form1`);
+	sendForm(`#form2`);
+	sendForm(`#form3`);
 
 });
