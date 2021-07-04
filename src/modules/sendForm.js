@@ -69,7 +69,6 @@ const sendForm = formNumber => {
     evt.preventDefault();
     form.appendChild(statusMessage);
 
-
     statusMessage.appendChild(loadMessage);
     document.head.append(style);
 
@@ -78,7 +77,6 @@ const sendForm = formNumber => {
     formData.forEach((key, val) => {
       body[key] = val;
     });
-
     postData(body)
       .then((response) => {
         if (response.status !== 200) {
@@ -88,7 +86,7 @@ const sendForm = formNumber => {
       })
       .catch(error => {
         statusMessage.textContent = errorMessage;
-        console.error(error)
+        console.error(error);
       });
     form.reset();
   });

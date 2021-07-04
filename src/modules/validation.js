@@ -35,6 +35,8 @@ const validation = () => {
   });
 
   maskPhone(`.form-phone`);
+  phone.forEach(item => {
+  });
 
   allInputs.forEach(input => {
     input.addEventListener(`blur`, () => {
