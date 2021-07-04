@@ -9,7 +9,9 @@ import team from './modules/team';
 import validation from './modules/validation';
 import calc from './modules/calc';
 import sendForm from './modules/sendForm';
+import smoothScroll from './modules/smoothScroll';
 
+smoothScroll();
 countTimer('18 july 2021');
 toggleMenu();
 togglePopUp();

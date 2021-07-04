@@ -1,3 +1,5 @@
+import maskPhone from './maskPhone';
+
 const validation = () => {
   const calcItems = document.querySelectorAll(`.calc-item:not(.calc-type)`),
     name = document.querySelectorAll(`.form-name`),
@@ -23,20 +25,16 @@ const validation = () => {
   });
 
   message.addEventListener(`input`, () => {
-    replace(message, /[^а-я\d\W\s]/i);
+    replace(message, /[^а-я\d\,.!?;:-\s]/i);
   });
 
   email.forEach(item => {
     item.addEventListener(`input`, evt => {
-      replace(item, /[^a-z\d\-.@_!*']/gi);
+      replace(item, /[^a-z\d\-~.@_!*']/gi);
     });
   });
 
-  phone.forEach(item => {
-    item.addEventListener(`input`, () => {
-      replace(item, /[^0-9\++]/);
-    });
-  });
+  maskPhone(`.form-phone`);
 
   allInputs.forEach(input => {
     input.addEventListener(`blur`, () => {

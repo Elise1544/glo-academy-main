@@ -6,6 +6,19 @@ const calc = (price = 100) => {
     calcCount = document.querySelector(`.calc-count`),
     totalValue = document.getElementById(`total`);
 
+  const animate = ({ timing, draw, duration }) => {
+    let start = performance.now();
+    requestAnimationFrame(function animate(time) {
+      let timeFraction = (time - start) / duration;
+      if (timeFraction > 1) timeFraction = 1;
+      let progress = timing(timeFraction);
+      draw(progress);
+      if (timeFraction < 1) {
+        requestAnimationFrame(animate);
+      }
+    });
+  };
+
   let total = 0;
   const countSum = () => {
     let countValue = 1,
@@ -28,28 +41,22 @@ const calc = (price = 100) => {
       total = price * typeValue * squareValue * countValue * dayValue;
     }
 
-    const outNum = (num, step) => {
-      let n = 0;
-      const t = Math.round(10 / (num / step));
-      const interval = setInterval(() => {
-        n += step;
-        if (n === num || num === 0 || num !== total) {
-          clearInterval(interval);
-        }
-        totalValue.textContent = n;
-      }, t);
-    };
-    outNum(total, 1);
+    animate({
+      duration: 1000,
+      timing(timeFraction) {
+        return timeFraction;
+      },
+      draw(progress) {
+        totalValue.textContent = (total * progress).toFixed(0);
+      }
+    });
 
   };
-
-
 
   calcBlock.addEventListener(`change`, evt => {
     const target = evt.target;
     if (target === calcType || target === calcSquare || target === calcDay || target === calcCount) {
       countSum();
-
     }
 
   });
